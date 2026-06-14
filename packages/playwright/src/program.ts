@@ -183,7 +183,7 @@ function addInitAgentsCommand(program: Command) {
   });
 }
 
-const kTraceModes: TraceMode[] = ['on', 'off', 'on-first-retry', 'on-all-retries', 'retain-on-failure', 'retain-on-first-failure', 'retain-on-failure-and-retries', 'retain-all-failures'];
+const kTraceModes: TraceMode[] = ['on', 'off', 'on-first-retry', 'on-all-retries', 'retain-on-failure', 'retain-on-first-failure', 'retain-on-failure-and-retries'];
 
 // Note: update docs/src/test-cli-js.md when you update this, program is the source of truth.
 
@@ -196,7 +196,7 @@ const testOptions: [string, { description: string, choices?: string[], preset?: 
   ['--fully-parallel', { description: `Run all tests in parallel (default: false)` }],
   ['--global-timeout <timeout>', { description: `Maximum time this test suite can run in milliseconds (default: unlimited)` }],
   ['-g, --grep <grep>', { description: `Only run tests matching this regular expression (default: ".*")` }],
-  ['--grep-invert <grep>', { description: `Only run tests that do not match this regular expression` }],
+  ['-G, --grep-invert <grep>', { description: `Only run tests that do not match this regular expression` }],
   ['--headed', { description: `Run tests in headed browsers (default: headless)` }],
   ['--ignore-snapshots', { description: `Ignore screenshot and snapshot expectations` }],
   ['--last-failed', { description: `Only re-run the failures` }],

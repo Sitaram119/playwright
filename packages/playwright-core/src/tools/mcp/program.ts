@@ -64,7 +64,7 @@ export function decorateMCPCommand(command: Command) {
       .option('--port <port>', 'port to listen on for SSE transport.')
       .option('--proxy-bypass <bypass>', 'comma-separated domains to bypass proxy, for example ".com,chromium.org,.domain.com"')
       .option('--proxy-server <proxy>', 'specify proxy server, for example "http://myproxy:3128" or "socks5://myproxy:8080"')
-      .option('--remote-header <headers...>', 'headers to send with the remote endpoint connect request, multiple can be specified.', headerParser)
+      .addOption(new ProgramOption('--remote-header <headers...>', 'headers to send with the remote endpoint connect request, multiple can be specified.').argParser(headerParser).hideHelp())
       .option('--sandbox', 'enable the sandbox for all process types that are normally not sandboxed.')
       .option('--save-session', 'Whether to save the Playwright MCP session into the output directory.')
       .option('--secrets <path>', 'path to a file containing secrets in the dotenv format', dotenvFileLoader)
@@ -88,7 +88,8 @@ export function decorateMCPCommand(command: Command) {
         if (options.vision) {
           // eslint-disable-next-line no-console
           console.error('The --vision option is deprecated, use --caps=vision instead');
-          options.caps = 'vision';
+          options.caps ??= [];
+          options.caps.push('vision');
         }
 
         if (options.caps?.includes('tracing'))
@@ -138,7 +139,7 @@ export function decorateMCPCommand(command: Command) {
             sharedBrowserPromise = undefined;
             const browserContext = (backend as BrowserBackend).browserContext;
             await browserContext.close().catch(() => { });
-            await browserContext.browser()!.close().catch(() => { });
+            await browserContext.browser()?.close().catch(() => { });
           }
         };
         await mcpServer.start(factory, config.server);

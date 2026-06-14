@@ -98,6 +98,23 @@ it('should emit keydown, keypress, textInput and input when typing a character',
   expect(await events.jsonValue()).toEqual(['keydown', 'keypress', 'textInput', 'input', 'keyup']);
 });
 
+it('should dispatch key events in separate tasks', async ({ page, browserName }) => {
+  it.skip(browserName === 'firefox', 'Firefox dispatches keydown and keypress in the same task');
+  await page.setContent(`<input>`);
+  const log = await page.evaluateHandle(() => {
+    const log: string[] = [];
+    const input = document.querySelector('input');
+    for (const type of ['keydown', 'keypress'])
+      input.addEventListener(type, () => { log.push(type); queueMicrotask(() => log.push('microtask-' + type)); });
+    input.focus();
+    return log;
+  });
+  await page.keyboard.press('a');
+  // A microtask scheduled in the keydown handler must run before keypress,
+  // proving each event is delivered in its own task rather than synchronously.
+  expect(await log.jsonValue()).toEqual(['keydown', 'microtask-keydown', 'keypress', 'microtask-keypress']);
+});
+
 it('should report shiftKey', async ({ page, server, browserName, platform }) => {
   it.fail(browserName === 'firefox' && platform === 'darwin');
 
@@ -769,20 +786,4 @@ it('should close dialog on Escape key press in contenteditable', {
   await widget.press('Escape');
   await expect(dialog).toHaveJSProperty('open', false);
   await expect(widget).not.toBeVisible();
-});
-
-it('should type with namedKeys', async ({ page }) => {
-  await page.evaluate(() => {
-    const textarea = document.createElement('textarea');
-    document.body.appendChild(textarea);
-    textarea.focus();
-  });
-  await page.keyboard.type('He{{ll}o{Enter}Wor{ld', { namedKeys: true });
-  expect(await page.evaluate(() => document.querySelector('textarea')!.value)).toBe('He{ll}o\nWor{ld');
-});
-
-it('locator should pressSequentially with namedKeys', async ({ page }) => {
-  await page.setContent(`<textarea></textarea>`);
-  await page.locator('textarea').pressSequentially('Hello{Enter}World', { namedKeys: true });
-  expect(await page.$eval('textarea', el => el.value)).toBe('Hello\nWorld');
 });

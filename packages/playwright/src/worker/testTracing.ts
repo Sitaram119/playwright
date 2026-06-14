@@ -18,7 +18,7 @@ import fs from 'fs';
 import path from 'path';
 
 import * as yazl from 'yazl';
-import * as yauzl from '@utils/third_party/yauzl';
+import * as yauzl from 'yauzl';
 import { ManualPromise } from '@isomorphic/manualPromise';
 import { monotonicTime } from '@isomorphic/time';
 import { calculateSha1, createGuid } from '@utils/crypto';
@@ -88,9 +88,6 @@ export class TestTracing {
       return true;
 
     if (this._options?.mode === 'retain-on-failure-and-retries')
-      return true;
-
-    if (this._options?.mode === 'retain-all-failures')
       return true;
 
     return false;
@@ -171,8 +168,6 @@ export class TestTracing {
     const testFailed = this._testInfo.status !== this._testInfo.expectedStatus;
     if (this._options.mode === 'retain-on-failure-and-retries')
       return !testFailed && this._testInfo.retry === 0;
-    if (this._options.mode === 'retain-all-failures')
-      return !testFailed;
     return !testFailed && (this._options.mode === 'retain-on-failure' || this._options.mode === 'retain-on-first-failure');
   }
 
@@ -243,9 +238,9 @@ export class TestTracing {
     const traceContent = Buffer.from(this._traceEvents.map(e => JSON.stringify(e)).join('\n'));
     zipFile.addBuffer(traceContent, testTraceEntryName);
 
-    await new Promise(f => {
+    await new Promise<void>((resolve, reject) => {
       zipFile.end(undefined, () => {
-        zipFile.outputStream.pipe(fs.createWriteStream(this._generateNextTraceRecordingPath())).on('close', f);
+        zipFile.outputStream.pipe(fs.createWriteStream(this._generateNextTraceRecordingPath())).on('close', resolve).on('error', reject);
       });
     });
 

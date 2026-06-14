@@ -1366,7 +1366,6 @@ export interface BrowserContextChannel extends BrowserContextEventTarget, Channe
   credentialsCreate(params: BrowserContextCredentialsCreateParams, progress?: Progress): Promise<BrowserContextCredentialsCreateResult>;
   credentialsGet(params: BrowserContextCredentialsGetParams, progress?: Progress): Promise<BrowserContextCredentialsGetResult>;
   credentialsDelete(params: BrowserContextCredentialsDeleteParams, progress?: Progress): Promise<BrowserContextCredentialsDeleteResult>;
-  credentialsSetUserVerified(params: BrowserContextCredentialsSetUserVerifiedParams, progress?: Progress): Promise<BrowserContextCredentialsSetUserVerifiedResult>;
 }
 export type BrowserContextBindingCallEvent = {
   binding: BindingCallChannel,
@@ -1785,13 +1784,6 @@ export type BrowserContextCredentialsDeleteOptions = {
 
 };
 export type BrowserContextCredentialsDeleteResult = void;
-export type BrowserContextCredentialsSetUserVerifiedParams = {
-  value: boolean,
-};
-export type BrowserContextCredentialsSetUserVerifiedOptions = {
-
-};
-export type BrowserContextCredentialsSetUserVerifiedResult = void;
 
 export interface BrowserContextEvents {
   'bindingCall': BrowserContextBindingCallEvent;
@@ -2245,7 +2237,7 @@ export interface ElectronApplicationEventTarget {
   on(event: 'close', callback: (params: ElectronApplicationCloseEvent) => void): this;
   on(event: 'console', callback: (params: ElectronApplicationConsoleEvent) => void): this;
 }
-export interface ElectronApplicationChannel extends ElectronApplicationEventTarget, EventTargetChannel {
+export interface ElectronApplicationChannel extends ElectronApplicationEventTarget, Channel {
   _type_ElectronApplication: boolean;
   browserWindow(params: ElectronApplicationBrowserWindowParams, progress?: Progress): Promise<ElectronApplicationBrowserWindowResult>;
   evaluateExpression(params: ElectronApplicationEvaluateExpressionParams, progress?: Progress): Promise<ElectronApplicationEvaluateExpressionResult>;
@@ -2949,13 +2941,11 @@ export type FrameTypeParams = {
   strict?: boolean,
   text: string,
   delay?: number,
-  namedKeys?: boolean,
   timeout: number,
 };
 export type FrameTypeOptions = {
   strict?: boolean,
   delay?: number,
-  namedKeys?: boolean,
 };
 export type FrameTypeResult = void;
 export type FrameUncheckParams = {
@@ -3030,15 +3020,14 @@ export type FrameExpectOptions = {
   expectedValue?: SerializedArgument,
   useInnerText?: boolean,
 };
-export type FrameExpectResult = {
-  matches: boolean,
+export type FrameExpectResult = void;
+export type FrameExpectErrorDetails = {
   received?: {
     value?: SerializedValue,
     ariaSnapshot?: string,
   },
   timedOut?: boolean,
-  errorMessage?: string,
-  log?: string[],
+  customErrorMessage?: string,
 };
 
 export interface FrameEvents {
@@ -4141,6 +4130,7 @@ export type PageRouteEvent = {
 };
 export type PageScreencastFrameEvent = {
   data: Binary,
+  timestamp: number,
   viewportWidth: number,
   viewportHeight: number,
 };
@@ -4325,8 +4315,11 @@ export type PageExpectScreenshotOptions = {
   style?: string,
 };
 export type PageExpectScreenshotResult = {
+  actual?: Binary,
+};
+export type PageExpectScreenshotErrorDetails = {
   diff?: Binary,
-  errorMessage?: string,
+  customErrorMessage?: string,
   actual?: Binary,
   previous?: Binary,
   timedOut?: boolean,
@@ -4433,11 +4426,9 @@ export type PageKeyboardInsertTextResult = void;
 export type PageKeyboardTypeParams = {
   text: string,
   delay?: number,
-  namedKeys?: boolean,
 };
 export type PageKeyboardTypeOptions = {
   delay?: number,
-  namedKeys?: boolean,
 };
 export type PageKeyboardTypeResult = void;
 export type PageKeyboardPressParams = {

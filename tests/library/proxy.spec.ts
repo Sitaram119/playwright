@@ -18,8 +18,6 @@ import { setupSocksForwardingServer } from '../config/proxy';
 import { playwrightTest as it, expect } from '../config/browserTest';
 import net from 'net';
 
-it.skip(({ mode }) => mode.startsWith('service'));
-
 it('should throw for bad server value', async ({ browserType }) => {
   const error = await browserType.launch({
     // @ts-expect-error server must be a string
@@ -92,7 +90,7 @@ it.describe('should proxy local network requests', () => {
       ]) {
         it(`${params.description}`, async ({ platform, browserName, browserType, server, proxyServer, channel }) => {
           it.skip(browserName === 'webkit' && platform === 'darwin' && ['localhost', '127.0.0.1'].includes(params.target) && additionalBypass, 'Mac webkit does not proxy localhost when bypass rules are set.');
-          it.fixme(channel?.startsWith('msedge'), 'times out while loading the page');
+          it.skip(channel?.startsWith('msedge'), 'times out while loading the page');
 
           const path = `/target-${additionalBypass}-${params.target}.html`;
           server.setRoute(path, async (req, res) => {
@@ -235,7 +233,7 @@ it('should work with authenticate followed by redirect', async ({ browserName, b
 });
 
 it('should exclude patterns', async ({ browserType, server, channel }) => {
-  it.fixme(channel?.startsWith('msedge'), 'times out while loading the page');
+  it.skip(channel?.startsWith('msedge'), 'times out while loading the page');
 
   server.setRoute('/target.html', async (req, res) => {
     res.end('<html><title>Served by the proxy</title></html>');

@@ -156,7 +156,8 @@ export async function program(options?: { embedderVersion?: string}) {
     }
     case 'attach': {
       const attachTarget = args._[1] as string | undefined;
-      if (attachTarget && (args.cdp || args.endpoint || args.extension))
+      const targetCount = (attachTarget ? 1 : 0) + (args.cdp ? 1 : 0) + (args.endpoint ? 1 : 0) + (args.extension ? 1 : 0);
+      if (targetCount > 1)
         output.errorAttachConflict();
       if (attachTarget)
         args.endpoint = attachTarget;
@@ -167,7 +168,7 @@ export async function program(options?: { embedderVersion?: string}) {
       }
 
       const cdpChannel = typeof args.cdp === 'string' && isKnownChannel(args.cdp) ? args.cdp : undefined;
-      const targetName = attachTarget ?? cdpChannel ?? extensionChannel ?? args.cdp as string;
+      const targetName = attachTarget ?? cdpChannel ?? extensionChannel ?? args.endpoint as string ?? args.cdp as string;
       if (!targetName)
         output.errorAttachNoTarget();
       const attachSessionName = explicitSessionName(args.session as string) ?? attachTarget ?? cdpChannel ?? extensionChannel ?? sessionName;

@@ -86,7 +86,7 @@ npx playwright test --ui
 | `--fully-parallel` | Run all tests in parallel (default: false). |
 | `--global-timeout <timeout>` | Maximum time this test suite can run in milliseconds (default: unlimited). |
 | `-g <grep>` or `--grep <grep>` | Only run tests matching this regular expression (default: ".*"). |
-| `--grep-invert <grep>` | Only run tests that do not match this regular expression. |
+| `-G <grep>` or `--grep-invert <grep>` | Only run tests that do not match this regular expression. |
 | `--headed` | Run tests in headed browsers (default: headless). |
 | `--ignore-snapshots` | Ignore screenshot and snapshot expectations. |
 | `-j <workers>` or `--workers <workers>` | Number of concurrent workers or percentage of logical CPU cores, use 1 to run in a single worker (default: 50%). |
@@ -107,7 +107,7 @@ npx playwright test --ui
 | `--test-list <file>` | Path to a file containing a list of tests to run. See [test list](#test-list) for details. |
 | `--test-list-invert <file>` | Path to a file containing a list of tests to skip. See [test list](#test-list) for details.  |
 | `--timeout <timeout>` | Specify test timeout threshold in milliseconds, zero for unlimited (default: 30 seconds). |
-| `--trace <mode>` | Force tracing mode, can be `on`, `off`, `on-first-retry`, `on-all-retries`, `retain-on-failure`, `retain-on-first-failure`, `retain-on-failure-and-retries`, `retain-all-failures`. |
+| `--trace <mode>` | Force tracing mode, can be `on`, `off`, `on-first-retry`, `on-all-retries`, `retain-on-failure`, `retain-on-first-failure`, `retain-on-failure-and-retries`. |
 | `--tsconfig <path>` | Path to a single tsconfig applicable to all imported files (default: look up tsconfig for each imported file separately). |
 | `--ui` | Run tests in interactive UI mode. |
 | `--ui-host <host>` | Host to serve UI on; specifying this option opens UI in a browser tab. |

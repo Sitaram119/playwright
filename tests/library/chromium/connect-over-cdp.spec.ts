@@ -520,9 +520,8 @@ test('should be able to connect via localhost', async ({ browserType }, testInfo
   }
 });
 
-test('emulate media should not be affected by second connectOverCDP', async ({ browserType }, testInfo) => {
+test('emulate media should not be affected by second connectOverCDP with noDefaults', async ({ browserType }, testInfo) => {
   test.info().annotations.push({ type: 'issue', description: 'https://github.com/microsoft/playwright/issues/24109' });
-  test.fixme();
   const port = 9339 + testInfo.workerIndex;
   const browserServer = await browserType.launch({
     args: ['--remote-debugging-port=' + port]
@@ -537,7 +536,7 @@ test('emulate media should not be affected by second connectOverCDP', async ({ b
     const page1 = await context1.newPage();
     await page1.emulateMedia({ media: 'print' });
     expect(await isPrint(page1)).toBe(true);
-    const browser2 = await browserType.connectOverCDP(`http://localhost:${port}`);
+    const browser2 = await browserType.connectOverCDP(`http://localhost:${port}`, { noDefaults: true });
     expect(await isPrint(page1)).toBe(true);
     await Promise.all([
       browser1.close(),
@@ -609,10 +608,10 @@ test('setInputFiles should use local path when isLocal is set', async ({ browser
   });
   try {
     const cdpBrowser1 = await browserType.connectOverCDP(`http://127.0.0.1:${port}/`);
-    expect(toImpl(cdpBrowser1)._isCollocatedWithServer).toBe(false);
+    expect(toImpl(cdpBrowser1)._isBrowserCollocatedWithServer).toBe(false);
 
     const cdpBrowser2 = await browserType.connectOverCDP(`http://127.0.0.1:${port}/`, { isLocal: true });
-    expect(toImpl(cdpBrowser2)._isCollocatedWithServer).toBe(true);
+    expect(toImpl(cdpBrowser2)._isBrowserCollocatedWithServer).toBe(true);
   } finally {
     await browserServer.close();
   }

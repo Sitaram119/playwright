@@ -956,10 +956,6 @@ scheme.BrowserContextCredentialsDeleteParams = tObject({
   id: tString,
 });
 scheme.BrowserContextCredentialsDeleteResult = tOptional(tObject({}));
-scheme.BrowserContextCredentialsSetUserVerifiedParams = tObject({
-  value: tBoolean,
-});
-scheme.BrowserContextCredentialsSetUserVerifiedResult = tOptional(tObject({}));
 scheme.BrowserTypeInitializer = tObject({
   executablePath: tString,
   name: tString,
@@ -1609,7 +1605,6 @@ scheme.FrameTypeParams = tObject({
   strict: tOptional(tBoolean),
   text: tString,
   delay: tOptional(tFloat),
-  namedKeys: tOptional(tBoolean),
   timeout: tFloat,
 });
 scheme.FrameTypeResult = tOptional(tObject({}));
@@ -1658,15 +1653,14 @@ scheme.FrameExpectParams = tObject({
   isNot: tBoolean,
   timeout: tFloat,
 });
-scheme.FrameExpectResult = tObject({
-  matches: tBoolean,
+scheme.FrameExpectResult = tOptional(tObject({}));
+scheme.FrameExpectErrorDetails = tObject({
   received: tOptional(tObject({
     value: tOptional(tType('SerializedValue')),
     ariaSnapshot: tOptional(tString),
   })),
   timedOut: tOptional(tBoolean),
-  errorMessage: tOptional(tString),
-  log: tOptional(tArray(tString)),
+  customErrorMessage: tOptional(tString),
 });
 scheme.JSHandleInitializer = tObject({
   preview: tString,
@@ -2300,6 +2294,7 @@ scheme.PageRouteEvent = tObject({
 });
 scheme.PageScreencastFrameEvent = tObject({
   data: tBinary,
+  timestamp: tFloat,
   viewportWidth: tInt,
   viewportHeight: tInt,
 });
@@ -2421,8 +2416,11 @@ scheme.PageExpectScreenshotParams = tObject({
   style: tOptional(tString),
 });
 scheme.PageExpectScreenshotResult = tObject({
+  actual: tOptional(tBinary),
+});
+scheme.PageExpectScreenshotErrorDetails = tObject({
   diff: tOptional(tBinary),
-  errorMessage: tOptional(tString),
+  customErrorMessage: tOptional(tString),
   actual: tOptional(tBinary),
   previous: tOptional(tBinary),
   timedOut: tOptional(tBoolean),
@@ -2492,7 +2490,6 @@ scheme.PageKeyboardInsertTextResult = tOptional(tObject({}));
 scheme.PageKeyboardTypeParams = tObject({
   text: tString,
   delay: tOptional(tFloat),
-  namedKeys: tOptional(tBoolean),
 });
 scheme.PageKeyboardTypeResult = tOptional(tObject({}));
 scheme.PageKeyboardPressParams = tObject({

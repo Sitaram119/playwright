@@ -189,8 +189,10 @@ Page:
         clip: Rect?
         $mixin: CommonScreenshotOptions
       returns:
+        actual: binary?
+      errorDetails:
         diff: binary?
-        errorMessage: string?
+        customErrorMessage: string?
         actual: binary?
         previous: binary?
         timedOut: boolean?
@@ -303,7 +305,6 @@ Page:
       parameters:
         text: string
         delay: float?
-        namedKeys: boolean?
       flags:
         slowMo: true
         snapshot: true
@@ -716,6 +717,7 @@ Page:
     screencastFrame:
       parameters:
         data: binary
+        timestamp: float
         viewportWidth: int
         viewportHeight: int
 
